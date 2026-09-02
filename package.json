@@ -1,0 +1,12 @@
+{
+  "name": "youtube-backend",
+  "version": "1.0.0",
+  "description": "practice backend project",
+  "license": "ISC",
+  "author": "Karan Gupta",
+  "type": " ",
+  "main": "index.js",
+  "scripts": {
+    "test": " "
+  }
+}
