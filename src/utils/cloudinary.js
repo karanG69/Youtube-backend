@@ -2,9 +2,9 @@ import {v2 as cloudinary} from "cloudinary";
 import fs from "fs";
 
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: 'yovxstem',
+    api_key: '182171519998327',
+    api_secret: '268bnob2mJrFE7FEVM7gF1pJ5Ok'
 });  
 
 const uploadOnCloudinary = async (filePath) => {
@@ -12,7 +12,7 @@ const uploadOnCloudinary = async (filePath) => {
         if(!filePath) {
             throw new Error("File path is required");
             return null;
-        }
+        } 
         const result = await cloudinary.uploader.upload(filePath, {
             resource_type: "auto",
         });

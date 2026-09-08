@@ -7,24 +7,39 @@ import {ApiResponse} from "../utils/ApiResponse.js";
 
 const registerUser = asyncHandeler(async (req, res) => {
 
-    const { username, email, fullname, password } = req.body;
+    //get the user from the request
+    //validate the user input
+    //check if the user already exists
+    //check if the avatar and cover image are present
+    //upload the avatar and cover image to cloudinary
+    //create the user object and create entry in the database
+    //removing the password and refresh token from the response object
+    //check if the user is created successfully and send the response back to the client
+
+
+    const { userName, email, fullName, password } = req.body;
+
+    //check if any of the required fields are missing
     if(
-        [fullname, username, email, password].some((field) => field.trim() === "")
+        [fullName, userName, email, password].some((field) => field.trim() === "")
     ){
         throw new ApiError(400, "All fields are required");
     }
 
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    //check if the user already exists
+    const existingUser = await User.findOne({ $or: [{ userName }, { email }] });
     if(existingUser){
         throw new ApiError(409, "Username or email already exists");
     }   
 
+    //
     const avatarLocalPath = req.files?.avatar[0]?.path;
     const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
     if(!avatarLocalPath) {
         throw new ApiError(400, "Avatar file is required");
     }   
+
 
     const avatar = await uploadOnCloudinary(avatarLocalPath);
     const coverImage = await uploadOnCloudinary(coverImageLocalPath);
@@ -33,10 +48,11 @@ const registerUser = asyncHandeler(async (req, res) => {
         throw new ApiError(500, "Failed to upload avatar to cloudinary");
     }
 
+    
     const user = await User.create({
-        username: username.toLowerCase(),
+        userName: userName.toLowerCase(),
         email,
-        fullname,
+        fullName,
         password,
         avatar: avatar.secure_url,
         coverImage: coverImage?.secure_url || "",
@@ -48,7 +64,7 @@ const registerUser = asyncHandeler(async (req, res) => {
         throw new ApiError(500, "Failed to create user");
     }
     
-    return res.status(201).json(new ApiResponse(201, "User registered successfully", createdUser));
+    res.status(201).json(new ApiResponse(201, "User registered successfully", createdUser));
 
 })
 
