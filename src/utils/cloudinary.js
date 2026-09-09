@@ -1,14 +1,18 @@
 import {v2 as cloudinary} from "cloudinary";
-import fs from "fs";
+import fs from "fs"; 
 
 cloudinary.config({
-    cloud_name: 'yovxstem',
-    api_key: '182171519998327',
-    api_secret: '268bnob2mJrFE7FEVM7gF1pJ5Ok'
-});  
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+}); 
 
 const uploadOnCloudinary = async (filePath) => {
     try {
+        //console.log("Cloud name:", process.env.CLOUDINARY_CLOUD_NAME);
+        //console.log("API key :", process.env.CLOUDINARY_API_KEY);
+        //console.log("API secret :", process.env.CLOUDINARY_API_SECRET);
+
         if(!filePath) {
             throw new Error("File path is required");
             return null;
