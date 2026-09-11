@@ -47,7 +47,7 @@ const userSchema = new Schema({
     },
 },
 {
-    Timestamps: true,
+    timestamps: true,
 }
 );
 
@@ -62,19 +62,21 @@ userSchema.methods.isPasswordCorrect = async function(password){
 userSchema.methods.generateAccessToken = function(){
     return jwt.sign(
         {
-        id: this._id,
+        _id: this._id,
         email: this.email,
-        fullname: this.fullname,
-        username: this.username,
+        fullName: this.fullName,
+        userName: this.userName,
         }, 
         process.env.ACCESS_TOKEN_SECRET, 
-        {expiresIn: process.env.ACCESS_TOKEN_EXPIRY}
+        {
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+        }
     );
 };
 userSchema.methods.generateRefreshToken = function(){
     return jwt.sign(
         {
-        id: this._id,
+        _id: this._id,
         }, 
         process.env.REFRESH_TOKEN_SECRET, 
         {expiresIn: process.env.REFRESH_TOKEN_EXPIRY}
