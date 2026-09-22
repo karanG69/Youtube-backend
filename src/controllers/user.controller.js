@@ -25,7 +25,6 @@ const generateAccessAndRefreshTokens = async(userId)=>{
 
 
 const registerUser = asyncHandeler(async (req, res) => {
-
     //get the user from the request
     //validate the user input
     //check if the user already exists
@@ -44,6 +43,7 @@ const registerUser = asyncHandeler(async (req, res) => {
     ){
         throw new ApiError(400, "All fields are required");
     }
+
 
     //check if the user already exists
     const existingUser = await User.findOne({ $or: [{ userName }, { email }] });
@@ -161,7 +161,6 @@ const logoutUser = asyncHandeler(async(req, res)=>{
 
 })
 
-
 const refreshAccessToken = asyncHandeler(async(req, res)=>{
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
     if(!incomingRefreshToken){
@@ -202,7 +201,51 @@ const refreshAccessToken = asyncHandeler(async(req, res)=>{
 
 })
 
+const changeCurrentPassword = asyncHandeler(async(req, res)=>{
+
+    const {currentPassword, updatedPassword} = req.body;
+
+    const user = await User.findById(req.user._id);
+
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+
+    const isPasswordCorrect = await user.isPasswordCorrect(currentPassword);
+    if(!isPasswordCorrect){
+        throw new ApiError(401, "wrong password");
+    }
+
+    user.password = updatedPassword;
+    
+    await user.save();
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200, 
+            {},
+            "Password updated successfull"
+        )
+    )
+});
+
+// const updateAccountDetails = asyncHandeler(async(req, res)=>{
+//     const {updtaedFullName, updatedUserName, updatedEmail} = req.body;
+// });
+
+// const getCurrentUser = asyncHandeler(async(req, res)=>{
+
+// });
+
+// const updateUserAvatar = asyncHandeler(async(req, res)=>{
+
+// });
+
+
 export { 
+    changeCurrentPassword,
     refreshAccessToken,
     registerUser,
     loginUser,
