@@ -1,20 +1,44 @@
 import { Router } from "express";
+
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { publishAVideo } from "../controllers/video.controller.js";
+
+import {
+    publishAVideo,
+    getAllVideos,
+    getVideoById,
+    updateVideo,
+    deleteVideo
+} from "../controllers/video.controller.js";
 
 const videoRoutes = Router();
 
-console.log("VideoRouter reached");
+// Publish video
+videoRoutes.route("/publish").post(
+    verifyJWT,
+    upload.fields([
+        { name: "video", maxCount: 1 },
+        { name: "thumbnail", maxCount: 1 }
+    ]),
+    publishAVideo
+);
 
-videoRoutes.get("/test", (req, res) => {
-    res.status(200).json({
-        message: "Video routes are working"
-    });
-});
+// Get all videos
+videoRoutes.route("/").get(
+    getAllVideos
+);
 
-videoRoutes.route("/publish").post(upload.fields([{name: "video", maxCount: 1},{name: "thumbnail", maxCount: 1}]), verifyJWT, publishAVideo);
+// Get, update and delete a specific video
+videoRoutes.route("/:videoId")
+    .get(getVideoById)
+    .patch(
+        verifyJWT,
+        upload.single("thumbnail"),
+        updateVideo
+    )
+    .delete(
+        verifyJWT,
+        deleteVideo
+    );
 
 export default videoRoutes;
-
-
